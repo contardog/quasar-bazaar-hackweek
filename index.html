@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quasar Bazaar Hackweek 🦆</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cosmos-dark: #0a0e27;
+            --cosmos-blue: #1e3a8a;
+            --quasar-purple: #7c3aed;
+            --quasar-pink: #ec4899;
+            --star-yellow: #fbbf24;
+            --nebula-cyan: #06b6d4;
+            --text-light: #e5e7eb;
+            --text-dim: #9ca3af;
+            --card-bg: rgba(30, 41, 59, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--cosmos-dark);
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 17px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated starfield background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 90%, white, transparent),
+                radial-gradient(1px 1px at 15% 80%, white, transparent);
+            background-size: 200% 200%;
+            background-position: 0% 0%;
+            animation: twinkle 60s ease-in-out infinite;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.6; background-position: 0% 0%; }
+            50% { opacity: 0.8; background-position: 100% 100%; }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Header */
+        header {
+            background: linear-gradient(135deg, var(--quasar-purple) 0%, var(--quasar-pink) 50%, var(--star-yellow) 100%);
+            padding: 5rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            animation: nebula 20s ease-in-out infinite;
+        }
+
+        @keyframes nebula {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(10px, 10px) rotate(180deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5),
+                         0 0 40px rgba(124,58,237,0.3);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(124,58,237,0.3); }
+            50% { text-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 60px rgba(124,58,237,0.5); }
+        }
+
+        .subtitle {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .quack {
+            font-size: 1.2rem;
+            font-style: italic;
+            opacity: 0.85;
+            margin-bottom: 2.5rem;
+        }
+
+        .event-meta {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .event-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0,0,0,0.2);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(10, 14, 39, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--quasar-purple);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.6s ease-out 0.3s backwards;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            padding: 1.3rem 0;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            transition: all 0.3s;
+            position: relative;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--quasar-purple), var(--quasar-pink));
+            transition: width 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--quasar-pink);
+            text-shadow: 0 0 10px var(--quasar-pink);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Content */
+        main {
+            padding: 4rem 0;
+        }
+
+        section {
+            margin-bottom: 5rem;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        section:nth-child(1) { animation-delay: 0.2s; }
+        section:nth-child(2) { animation-delay: 0.3s; }
+        section:nth-child(3) { animation-delay: 0.4s; }
+        section:nth-child(4) { animation-delay: 0.5s; }
+        section:nth-child(5) { animation-delay: 0.6s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--quasar-pink);
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--quasar-purple), var(--nebula-cyan));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--nebula-cyan);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            margin-bottom: 1.5rem;
+            transition: all 0.4s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+            border-color: var(--quasar-purple);
+        }
+
+        /* Schedule */
+        .schedule-day {
+            margin-bottom: 3rem;
+        }
+
+        .schedule-item {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 2rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+
+        .time {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: var(--star-yellow);
+            font-size: 1.1rem;
+            text-align: right;
+        }
+
+        .schedule-content h4 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .speaker {
+            color: var(--text-dim);
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .description {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        /* Presentations */
+        .presentation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.4);
+            border-left: 4px solid var(--quasar-purple);
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .presentation-item:hover {
+            background: rgba(30, 41, 59, 0.6);
+            border-left-color: var(--quasar-pink);
+            transform: translateX(5px);
+        }
+
+        .presentation-info h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--text-light);
+        }
+
+        .presentation-author {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        .download-links {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, var(--quasar-purple), var(--quasar-pink));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--nebula-cyan), var(--cosmos-blue));
+        }
+
+        /* Notice Box */
+        .notice {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.05));
+            border-left: 4px solid var(--star-yellow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .notice strong {
+            color: var(--star-yellow);
+        }
+
+        /* Organizers */
+        .organizers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .organizer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            transition: all 0.3s;
+        }
+
+        .organizer:hover {
+            border-color: var(--quasar-pink);
+            transform: translateY(-3px);
+        }
+
+        .organizer-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--text-light);
+        }
+
+        .organizer-affiliation {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .organizer-email {
+            color: var(--nebula-cyan);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: 'Orbitron', sans-serif;
+            transition: color 0.3s;
+        }
+
+        .organizer-email:hover {
+            color: var(--quasar-pink);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 14, 39, 0.9);
+            border-top: 2px solid var(--quasar-purple);
+            padding: 3rem 0;
+            margin-top: 5rem;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            .subtitle {
+                font-size: 1.3rem;
+            }
+
+            .event-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .schedule-item {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .time {
+                text-align: left;
+            }
+
+            .presentation-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>🌌 Quasar Bazaar Hackweek 🦆</h1>
+                <p class="subtitle">A Cosmic Collaboration Experience</p>
+                <p class="quack">It's a quackweek!</p>
+                <div class="event-meta">
+                    <span>📅 [Dates - e.g., June 15-19, 2026]</span>
+                    <span>📍 [Location/Institution]</span>
+                    <span>👥 [Expected Participants]</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#schedule">Schedule</a></li>
+            <li><a href="#materials">Materials</a></li>
+            <li><a href="#registration">Registration</a></li>
+            <li><a href="#organizers">Organizers</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section id="about">
+            <h2>About the Hackweek</h2>
+            <div class="card">
+                <p>
+                    Welcome to the <strong>Quasar Bazaar Hackweek</strong>! This intensive week-long event brings together 
+                    astronomers, data scientists, and quasar enthusiasts to collaborate on cutting-edge research, 
+                    share knowledge, and build tools for the quasar community.
+                </p>
+                <p style="margin-top: 1.5rem;">
+                    <strong>What to expect:</strong><br>
+                    • Hands-on tutorials on quasar data analysis techniques<br>
+                    • Collaborative hack projects addressing real research challenges<br>
+                    • Expert talks from leading researchers in the field<br>
+                    • Networking opportunities with the quasar community<br>
+                    • Open-source tool development and community building
+                </p>
+            </div>
+
+            <div class="notice">
+                <strong>Important:</strong> Registration opens on [Date] and closes on [Date]. 
+                Limited spots available - register early to secure your place at the bazaar!
+            </div>
+        </section>
+
+        <section id="schedule">
+            <h2>Schedule</h2>
+            
+            <div class="card schedule-day">
+                <h3>Monday - Day 1: Welcome & Foundations</h3>
+                <div class="schedule-item">
+                    <div class="time">09:00 - 09:30</div>
+                    <div class="schedule-content">
+                        <h4>☕ Registration & Coffee</h4>
+                        <p class="description">Get settled and meet fellow participants</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">09:30 - 10:00</div>
+                    <div class="schedule-content">
+                        <h4>🎤 Opening Remarks & Icebreaker</h4>
+                        <p class="speaker">Organizers</p>
+                        <p class="description">Welcome and introduction to the week ahead</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">10:00 - 12:00</div>
+                    <div class="schedule-content">
+                        <h4>📊 Tutorial: Quasar Data Basics</h4>
+                        <p class="speaker">Dr. [Name], [Institution]</p>
+                        <p class="description">Introduction to quasar spectroscopy and photometry</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">12:00 - 13:00</div>
+                    <div class="schedule-content">
+                        <h4>🍕 Lunch Break</h4>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">13:00 - 15:00</div>
+                    <div class="schedule-content">
+                        <h4>💻 Hands-on: Working with Survey Data</h4>
+                        <p class="speaker">Facilitators</p>
+                        <p class="description">Practical session with SDSS, DESI, and other surveys</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">15:00 - 17:00</div>
+                    <div class="schedule-content">
+                        <h4>🚀 Project Pitches & Team Formation</h4>
+                        <p class="description">Brainstorm hack projects and form teams</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card schedule-day">
+                <h3>Tuesday - Day 2: Advanced Techniques</h3>
+                <div class="schedule-item">
+                    <div class="time">09:00 - 11:00</div>
+                    <div class="schedule-content">
+                        <h4>🔬 Tutorial: Machine Learning for Quasars</h4>
+                        <p class="speaker">Dr. [Name], [Institution]</p>
+                        <p class="description">Classification, photometric redshifts, and anomaly detection</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">11:00 - 12:00</div>
+                    <div class="schedule-content">
+                        <h4>🌟 Lightning Talks</h4>
+                        <p class="description">5-minute talks from participants on their research</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">12:00 - 13:00</div>
+                    <div class="schedule-content">
+                        <h4>🍕 Lunch Break</h4>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">13:00 - 17:00</div>
+                    <div class="schedule-content">
+                        <h4>🔨 Hack Project Time</h4>
+                        <p class="description">Work on team projects with mentor support</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card schedule-day">
+                <h3>Wednesday - Day 3: Hack Day</h3>
+                <div class="schedule-item">
+                    <div class="time">09:00 - 12:00</div>
+                    <div class="schedule-content">
+                        <h4>🔨 Hack Project Time</h4>
+                        <p class="description">Intensive project development session</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">12:00 - 13:00</div>
+                    <div class="schedule-content">
+                        <h4>🍕 Lunch Break</h4>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">13:00 - 15:00</div>
+                    <div class="schedule-content">
+                        <h4>💡 Special Session: [Topic TBD]</h4>
+                        <p class="speaker">Guest Speaker</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">15:00 - 17:00</div>
+                    <div class="schedule-content">
+                        <h4>🔨 Hack Project Time</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card schedule-day">
+                <h3>Thursday - Day 4: Advanced Topics</h3>
+                <div class="schedule-item">
+                    <div class="time">09:00 - 11:00</div>
+                    <div class="schedule-content">
+                        <h4>🎯 Tutorial: [Advanced Topic]</h4>
+                        <p class="speaker">Dr. [Name], [Institution]</p>
+                        <p class="description">Deep dive into specialized analysis techniques</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">11:00 - 12:00</div>
+                    <div class="schedule-content">
+                        <h4>📢 Mid-week Project Updates</h4>
+                        <p class="description">Each team presents progress (5 min per team)</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">12:00 - 13:00</div>
+                    <div class="schedule-content">
+                        <h4>🍕 Lunch Break</h4>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">13:00 - 17:00</div>
+                    <div class="schedule-content">
+                        <h4>🔨 Hack Project Time</h4>
+                        <p class="description">Final push on projects</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card schedule-day">
+                <h3>Friday - Day 5: Presentations & Wrap-up</h3>
+                <div class="schedule-item">
+                    <div class="time">09:00 - 11:00</div>
+                    <div class="schedule-content">
+                        <h4>🔨 Final Project Sprint</h4>
+                        <p class="description">Last chance to polish presentations and code</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">11:00 - 12:00</div>
+                    <div class="schedule-content">
+                        <h4>🍕 Lunch Break</h4>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">12:00 - 15:00</div>
+                    <div class="schedule-content">
+                        <h4>🎉 Team Presentations</h4>
+                        <p class="description">Each team presents their hack project results (15 min per team)</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">15:00 - 15:30</div>
+                    <div class="schedule-content">
+                        <h4>🏆 Closing Remarks & Feedback</h4>
+                        <p class="speaker">Organizers</p>
+                        <p class="description">Wrap-up, next steps, and community building</p>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">15:30 - 17:00</div>
+                    <div class="schedule-content">
+                        <h4>🎊 Social Hour</h4>
+                        <p class="description">Celebrate the week's accomplishments!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="materials">
+            <h2>Materials & Resources</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-dim);">
+                All workshop materials including slides, notebooks, and datasets will be available here.
+            </p>
+
+            <div class="presentation-item">
+                <div class="presentation-info">
+                    <h4>Introduction to Quasar Spectroscopy</h4>
+                    <p class="presentation-author">Dr. [Name] • Day 1</p>
+                </div>
+                <div class="download-links">
+                    <a href="materials/day1-spectroscopy.pdf" class="btn" download>📥 Slides</a>
+                    <a href="https://github.com/your-org/quasar-bazaar-materials" class="btn btn-secondary" target="_blank">💻 Notebook</a>
+                </div>
+            </div>
+
+            <div class="presentation-item">
+                <div class="presentation-info">
+                    <h4>Working with Survey Data (SDSS, DESI)</h4>
+                    <p class="presentation-author">Facilitators • Day 1</p>
+                </div>
+                <div class="download-links">
+                    <a href="materials/day1-surveys.pdf" class="btn" download>📥 Slides</a>
+                    <a href="notebooks/survey-tutorial.ipynb" class="btn btn-secondary" download>📓 Notebook</a>
+                </div>
+            </div>
+
+            <div class="presentation-item">
+                <div class="presentation-info">
+                    <h4>Machine Learning for Quasar Classification</h4>
+                    <p class="presentation-author">Dr. [Name] • Day 2</p>
+                </div>
+                <div class="download-links">
+                    <a href="materials/day2-ml.pdf" class="btn" download>📥 Slides</a>
+                    <a href="https://github.com/your-org/ml-quasars" class="btn btn-secondary" target="_blank">💻 Code</a>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 2.5rem;">
+                <h3>📦 Additional Resources</h3>
+                <p style="margin-bottom: 1rem;">
+                    • <a href="https://github.com/your-org/quasar-bazaar-2026" target="_blank" style="color: var(--nebula-cyan); text-decoration: none;">🗃️ Full GitHub Repository</a> - All materials, code, and datasets<br>
+                    • <a href="datasets/" style="color: var(--nebula-cyan); text-decoration: none;">📊 Tutorial Datasets</a> - Practice data for hands-on sessions<br>
+                    • <a href="https://your-slack-workspace.slack.com" target="_blank" style="color: var(--nebula-cyan); text-decoration: none;">💬 Slack Workspace</a> - Join the conversation!<br>
+                    • <a href="resources.html" style="color: var(--nebula-cyan); text-decoration: none;">📚 Reading List</a> - Recommended papers and documentation
+                </p>
+            </div>
+        </section>
+
+        <section id="registration">
+            <h2>Registration</h2>
+            <div class="card">
+                <p style="margin-bottom: 1.5rem;">
+                    Registration for the Quasar Bazaar Hackweek is <strong>free</strong>, but space is limited 
+                    to ensure a collaborative environment. We welcome participants from all career stages - 
+                    graduate students, postdocs, faculty, and research scientists.
+                </p>
+                
+                <p style="margin-bottom: 1.5rem;">
+                    <strong>Application period:</strong> [Start Date] - [End Date]<br>
+                    <strong>Notification:</strong> [Date]<br>
+                    <strong>Hackweek dates:</strong> [Start Date] - [End Date]
+                </p>
+
+                <div style="margin: 2rem 0;">
+                    <a href="https://forms.gle/your-form-link" class="btn" target="_blank" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                        🚀 Apply Now
+                    </a>
+                </div>
+
+                <p style="color: var(--text-dim); font-size: 0.95rem; margin-top: 1.5rem;">
+                    <strong>What we're looking for:</strong> Enthusiasm for quasar science, willingness to 
+                    collaborate, and some programming experience (Python preferred). No prior quasar research 
+                    required - we'll cover the basics!
+                </p>
+            </div>
+        </section>
+
+        <section id="organizers">
+            <h2>Organizing Team</h2>
+            <div class="organizers-grid">
+                <div class="organizer">
+                    <div class="organizer-name">Dr. [Name]</div>
+                    <div class="organizer-affiliation">[Institution]</div>
+                    <a href="mailto:email@institution.edu" class="organizer-email">email@institution.edu</a>
+                </div>
+                <div class="organizer">
+                    <div class="organizer-name">Dr. [Name]</div>
+                    <div class="organizer-affiliation">[Institution]</div>
+                    <a href="mailto:email@institution.edu" class="organizer-email">email@institution.edu</a>
+                </div>
+                <div class="organizer">
+                    <div class="organizer-name">[Name]</div>
+                    <div class="organizer-affiliation">[Institution]</div>
+                    <a href="mailto:email@institution.edu" class="organizer-email">email@institution.edu</a>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 2.5rem; text-align: center;">
+                <p>
+                    Questions about the hackweek? Contact us at 
+                    <a href="mailto:quasarbazaar@example.edu" style="color: var(--quasar-pink); text-decoration: none; font-weight: 600;">
+                        quasarbazaar@example.edu
+                    </a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                🌌 Quasar Bazaar Hackweek 2026 🦆<br>
+                Made with ✨ and cosmic enthusiasm
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
