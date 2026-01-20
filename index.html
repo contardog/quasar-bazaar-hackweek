@@ -292,108 +292,486 @@
         }
 
         /* Schedule */
-        .schedule-day {
-            margin-bottom: 3rem;
-        }
+        /* <style> */
+/* Schedule Controls */
+.schedule-controls {
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: center;
+}
 
-        .schedule-item {
-            display: grid;
-            grid-template-columns: 160px 1fr;
-            gap: 2rem;
-            padding: 1.5rem 0;
-            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
-        }
+.view-toggle {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 0.5rem;
+    display: flex;
+    gap: 0.4rem;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+}
 
-        .schedule-item:last-child {
-            border-bottom: none;
-        }
+.toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    padding: 0.7rem 2rem;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
 
-        .time {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            color: var(--star-yellow);
-            font-size: 1.1rem;
-            text-align: right;
-        }
+.toggle-btn:hover {
+    color: var(--text-light);
+    text-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
 
-        .schedule-content h4 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-light);
-        }
+.toggle-btn.active {
+    background: linear-gradient(135deg, var(--quasar-purple), var(--quasar-pink));
+    color: white;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5);
+}
 
-        .speaker {
-            color: var(--text-dim);
-            font-style: italic;
-            margin-bottom: 0.5rem;
-        }
+/* Schedule Views */
+.schedule-view {
+    display: none;
+}
 
-        .description {
-            color: var(--text-dim);
-            font-size: 0.95rem;
-        }
+.schedule-view.active {
+    display: block;
+    animation: fadeIn 0.5s ease-out;
+}
 
-        /* Presentations */
-        .presentation-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            background: rgba(30, 41, 59, 0.4);
-            border-left: 4px solid var(--quasar-purple);
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
+/* ========== WEEK VIEW - Horizontal Grid ========== */
+.schedule-grid {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    overflow-x: auto;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: all 0.4s;
+}
 
-        .presentation-item:hover {
-            background: rgba(30, 41, 59, 0.6);
-            border-left-color: var(--quasar-pink);
-            transform: translateX(5px);
-        }
+.schedule-grid:hover {
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+}
 
-        .presentation-info h4 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-            color: var(--text-light);
-        }
+.schedule-header {
+    display: grid;
+    grid-template-columns: 90px repeat(5, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    padding-bottom: 1rem;
+    z-index: 10;
+}
 
-        .presentation-author {
-            color: var(--text-dim);
-            font-size: 0.95rem;
-        }
+.header-cell {
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    padding: 1rem 0.5rem;
+    border-radius: 10px;
+}
 
-        .download-links {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-        }
+.time-column.header-cell {
+    font-size: 0.9rem;
+    color: var(--star-yellow);
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
 
-        .btn {
-            display: inline-block;
-            padding: 0.7rem 1.5rem;
-            background: linear-gradient(135deg, var(--quasar-purple), var(--quasar-pink));
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 0.05em;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
-        }
+.day-column.header-cell {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(236, 72, 153, 0.3));
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
-        }
+.day-column.header-cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s;
+}
 
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--nebula-cyan), var(--cosmos-blue));
-        }
+.day-column.header-cell:hover::before {
+    left: 100%;
+}
+
+.day-column.header-cell:hover {
+    border-color: var(--quasar-pink);
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+}
+
+.day-name {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--quasar-pink);
+    text-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+}
+
+.day-subtitle {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--nebula-cyan);
+    font-weight: 500;
+    margin-top: 0.3rem;
+    letter-spacing: 0.05em;
+}
+
+.schedule-row {
+    display: grid;
+    grid-template-columns: 90px repeat(5, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+    min-height: 70px;
+}
+
+.time-column {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--star-yellow);
+    padding: 1rem 0;
+    text-align: center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background: rgba(251, 191, 36, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.day-column {
+    position: relative;
+}
+
+.session-block {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.15));
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    height: 100%;
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.session-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.session-block:hover::before {
+    opacity: 1;
+}
+
+.session-block:hover {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.35), rgba(236, 72, 153, 0.25));
+    border-color: var(--quasar-pink);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+}
+
+.session-block.long {
+    min-height: 140px;
+}
+
+.session-block.break {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+    border-color: rgba(251, 191, 36, 0.4);
+}
+
+.session-block.break:hover {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.15));
+    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3);
+}
+
+.session-block.social {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.1));
+    border-color: rgba(6, 182, 212, 0.4);
+}
+
+.session-block.social:hover {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.15));
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+}
+
+.session-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-light);
+    line-height: 1.4;
+    position: relative;
+    z-index: 1;
+}
+
+.session-speaker {
+    font-size: 0.8rem;
+    color: var(--nebula-cyan);
+    font-style: italic;
+    margin-top: 0.4rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== DAY VIEW - Tabbed Interface ========== */
+.day-tabs {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 0;
+    overflow-x: auto;
+    padding-bottom: 0;
+}
+
+.day-tab {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    color: var(--text-dim);
+    padding: 1rem 2.5rem;
+    border-radius: 10px 10px 0 0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+}
+
+.day-tab::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: linear-gradient(90deg, var(--quasar-purple), var(--quasar-pink));
+    transition: height 0.3s;
+}
+
+.day-tab:hover {
+    color: var(--quasar-pink);
+    border-color: var(--quasar-purple);
+    text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+}
+
+.day-tab:hover::before {
+    height: 3px;
+}
+
+.day-tab.active {
+    background: var(--card-bg);
+    color: var(--quasar-pink);
+    border-color: var(--quasar-purple);
+    border-bottom-color: transparent;
+    box-shadow: 0 -4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.day-tab.active::before {
+    height: 3px;
+}
+
+.day-content {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 0 12px 12px 12px;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    padding: 2.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: all 0.4s;
+}
+
+.day-content:hover {
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+}
+
+.day-panel {
+    display: none;
+}
+
+.day-panel.active {
+    display: block;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.day-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--nebula-cyan);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+.session-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.session-item {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 2rem;
+    padding: 1.3rem;
+    background: rgba(30, 41, 59, 0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    border-left: 4px solid var(--quasar-purple);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.session-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.session-item:hover::before {
+    opacity: 1;
+}
+
+.session-item:hover {
+    background: rgba(30, 41, 59, 0.5);
+    border-left-color: var(--quasar-pink);
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.session-item.break {
+    background: rgba(251, 191, 36, 0.15);
+    border-left-color: var(--star-yellow);
+}
+
+.session-item.break::before {
+    background: linear-gradient(90deg, rgba(251, 191, 36, 0.1), transparent);
+}
+
+.session-item.break:hover {
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+}
+
+.session-item.social {
+    background: rgba(6, 182, 212, 0.15);
+    border-left-color: var(--nebula-cyan);
+}
+
+.session-item.social::before {
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.1), transparent);
+}
+
+.session-item.social:hover {
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+
+.session-time {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    color: var(--star-yellow);
+    font-size: 1rem;
+    text-align: right;
+    padding-top: 0.2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.session-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    position: relative;
+    z-index: 1;
+}
+
+.session-name {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.session-desc {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .schedule-grid {
+        min-width: 950px;
+    }
+}
+
+@media (max-width: 768px) {
+    .schedule-header,
+    .schedule-row {
+        grid-template-columns: 70px repeat(5, minmax(110px, 1fr));
+    }
+    
+    .session-title {
+        font-size: 0.8rem;
+    }
+    
+    .session-speaker {
+        font-size: 0.75rem;
+    }
+    
+    .day-tab {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .session-item {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+    
+    .session-time {
+        text-align: left;
+    }
+    
+    .day-title {
+        font-size: 1.4rem;
+    }
+}
+<!-- </style> -->
+
 
         /* Notice Box */
         .notice {
@@ -553,187 +931,426 @@
         <section id="schedule">
             <h2>Schedule</h2>
             
-            <div class="card schedule-day">
-                <h3>Monday - Day 1</h3>
-                <div class="schedule-item">
-                    <div class="time">09:00 - 09:30</div>
-                    <div class="schedule-content">
-                        <h4>☕ Registration & Coffee</h4>
-                        <p class="description">Get settled and meet fellow participants</p>
-                    </div>
+            <!-- View Toggle -->
+            <div class="schedule-controls">
+                <div class="view-toggle">
+                    <button class="toggle-btn active" data-view="week">Week View</button>
+                    <button class="toggle-btn" data-view="day">Day View</button>
                 </div>
-                <div class="schedule-item">
-                    <div class="time">09:30 - 10:00</div>
-                    <div class="schedule-content">
-                        <h4>🎤 Opening Remarks & Icebreaker</h4>
-                        <p class="speaker">Organizers</p>
-                        <p class="description">Welcome and introduction to the week ahead</p>
+            </div>
+
+            <!-- WEEK VIEW - Horizontal Grid -->
+            <div class="schedule-view week-view active">
+                <div class="schedule-grid">
+                    <!-- Header Row with Days -->
+                    <div class="schedule-header">
+                        <div class="time-column header-cell">Time</div>
+                        <div class="day-column header-cell">
+                            <span class="day-name">Monday</span>
+                            <span class="day-subtitle">Day 1</span>
+                        </div>
+                        <div class="day-column header-cell">
+                            <span class="day-name">Tuesday</span>
+                            <span class="day-subtitle">Day 2</span>
+                        </div>
+                        <div class="day-column header-cell">
+                            <span class="day-name">Wednesday</span>
+                            <span class="day-subtitle">Day 3</span>
+                        </div>
+                        <div class="day-column header-cell">
+                            <span class="day-name">Thursday</span>
+                            <span class="day-subtitle">Day 4</span>
+                        </div>
+                        <div class="day-column header-cell">
+                            <span class="day-name">Friday</span>
+                            <span class="day-subtitle">Day 5</span>
+                        </div>
                     </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">10:00 - 12:00</div>
-                    <div class="schedule-content">
-                        <h4>📊 Tutorial: Quasar Data Basics</h4>
-                        <p class="speaker">Dr. [Name], [Institution]</p>
-                        <p class="description">Introduction to quasar spectroscopy and photometry</p>
+
+                    <!-- Time Slots -->
+                    <div class="schedule-row">
+                        <div class="time-column">09:00</div>
+                        <div class="day-column">
+                            <div class="session-block short">
+                                <div class="session-title">Registration & Coffee</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">ML for Quasars</div>
+                                <div class="session-speaker">Dr. [Name]</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Hack Project Time</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Advanced Tutorial</div>
+                                <div class="session-speaker">Dr. [Name]</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Final Project Sprint</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">12:00 - 13:00</div>
-                    <div class="schedule-content">
-                        <h4>🍕 Lunch Break</h4>
+
+                    <div class="schedule-row">
+                        <div class="time-column">09:30</div>
+                        <div class="day-column">
+                            <div class="session-block short">
+                                <div class="session-title">Opening Remarks</div>
+                            </div>
+                        </div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
                     </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">13:00 - 15:00</div>
-                    <div class="schedule-content">
-                        <h4>💻 Hands-on: Working with Survey Data</h4>
-                        <p class="speaker">Facilitators</p>
-                        <p class="description">Practical session with SDSS, DESI, and other surveys</p>
+
+                    <div class="schedule-row">
+                        <div class="time-column">10:00</div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Quasar Data Basics</div>
+                                <div class="session-speaker">Dr. [Name]</div>
+                            </div>
+                        </div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
                     </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">15:00 - 17:00</div>
-                    <div class="schedule-content">
-                        <h4>🚀 Project Pitches & Team Formation</h4>
-                        <p class="description">Brainstorm hack projects and form teams</p>
+
+                    <div class="schedule-row">
+                        <div class="time-column">11:00</div>
+                        <div class="day-column"></div>
+                        <div class="day-column">
+                            <div class="session-block short">
+                                <div class="session-title">Lightning Talks</div>
+                            </div>
+                        </div>
+                        <div class="day-column"></div>
+                        <div class="day-column">
+                            <div class="session-block short">
+                                <div class="session-title">Project Updates</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block short break">
+                                <div class="session-title">Lunch</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-row">
+                        <div class="time-column">12:00</div>
+                        <div class="day-column">
+                            <div class="session-block short break">
+                                <div class="session-title">Lunch</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block short break">
+                                <div class="session-title">Lunch</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block short break">
+                                <div class="session-title">Lunch</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block short break">
+                                <div class="session-title">Lunch</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Team Presentations</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-row">
+                        <div class="time-column">13:00</div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Working with Survey Data</div>
+                                <div class="session-speaker">Facilitators</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Hack Project Time</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Special Session</div>
+                                <div class="session-speaker">Guest Speaker</div>
+                            </div>
+                        </div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Hack Project Time</div>
+                            </div>
+                        </div>
+                        <div class="day-column"></div>
+                    </div>
+
+                    <div class="schedule-row">
+                        <div class="time-column">15:00</div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Project Pitches & Teams</div>
+                            </div>
+                        </div>
+                        <div class="day-column"></div>
+                        <div class="day-column">
+                            <div class="session-block long">
+                                <div class="session-title">Hack Project Time</div>
+                            </div>
+                        </div>
+                        <div class="day-column"></div>
+                        <div class="day-column">
+                            <div class="session-block short">
+                                <div class="session-title">Closing Remarks</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-row">
+                        <div class="time-column">15:30</div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
+                        <div class="day-column"></div>
+                        <div class="day-column">
+                            <div class="session-block short social">
+                                <div class="session-title">Social Hour 🎊</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card schedule-day">
-                <h3>Tuesday - Day 2: Advanced Techniques</h3>
-                <div class="schedule-item">
-                    <div class="time">09:00 - 11:00</div>
-                    <div class="schedule-content">
-                        <h4>🔬 Tutorial: Machine Learning for Quasars</h4>
-                        <p class="speaker">Dr. [Name], [Institution]</p>
-                        <p class="description">Classification, photometric redshifts, and anomaly detection</p>
-                    </div>
+            <!-- DAY VIEW - Tabbed Interface -->
+            <div class="schedule-view day-view">
+                <!-- Day Tabs -->
+                <div class="day-tabs">
+                    <button class="day-tab active" data-day="1">Monday</button>
+                    <button class="day-tab" data-day="2">Tuesday</button>
+                    <button class="day-tab" data-day="3">Wednesday</button>
+                    <button class="day-tab" data-day="4">Thursday</button>
+                    <button class="day-tab" data-day="5">Friday</button>
                 </div>
-                <div class="schedule-item">
-                    <div class="time">11:00 - 12:00</div>
-                    <div class="schedule-content">
-                        <h4>🌟 Lightning Talks</h4>
-                        <p class="description">5-minute talks from participants on their research</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">12:00 - 13:00</div>
-                    <div class="schedule-content">
-                        <h4>🍕 Lunch Break</h4>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">13:00 - 17:00</div>
-                    <div class="schedule-content">
-                        <h4>🔨 Hack Project Time</h4>
-                        <p class="description">Work on team projects with mentor support</p>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card schedule-day">
-                <h3>Wednesday - Day 3: Hack Day</h3>
-                <div class="schedule-item">
-                    <div class="time">09:00 - 12:00</div>
-                    <div class="schedule-content">
-                        <h4>🔨 Hack Project Time</h4>
-                        <p class="description">Intensive project development session</p>
+                <!-- Day Content Panels -->
+                <div class="day-content">
+                    <!-- Day 1 -->
+                    <div class="day-panel active" data-day="1">
+                        <div class="day-title">Monday - Day 1: Welcome & Foundations</div>
+                        <div class="session-list">
+                            <div class="session-item">
+                                <div class="session-time">09:00 - 09:30</div>
+                                <div class="session-details">
+                                    <div class="session-name">Registration & Coffee</div>
+                                    <div class="session-desc">Get settled and meet fellow participants</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">09:30 - 10:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Opening Remarks & Icebreaker</div>
+                                    <div class="session-speaker">Organizers</div>
+                                    <div class="session-desc">Welcome and introduction to the week ahead</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">10:00 - 12:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Tutorial: Quasar Data Basics</div>
+                                    <div class="session-speaker">Dr. [Name], [Institution]</div>
+                                    <div class="session-desc">Introduction to quasar spectroscopy and photometry</div>
+                                </div>
+                            </div>
+                            <div class="session-item break">
+                                <div class="session-time">12:00 - 13:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Lunch Break</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">13:00 - 15:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Hands-on: Working with Survey Data</div>
+                                    <div class="session-speaker">Facilitators</div>
+                                    <div class="session-desc">Practical session with SDSS, DESI, and other surveys</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">15:00 - 17:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Project Pitches & Team Formation</div>
+                                    <div class="session-desc">Brainstorm hack projects and form teams</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">12:00 - 13:00</div>
-                    <div class="schedule-content">
-                        <h4>🍕 Lunch Break</h4>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">13:00 - 15:00</div>
-                    <div class="schedule-content">
-                        <h4>💡 Special Session: [Topic TBD]</h4>
-                        <p class="speaker">Guest Speaker</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">15:00 - 17:00</div>
-                    <div class="schedule-content">
-                        <h4>🔨 Hack Project Time</h4>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card schedule-day">
-                <h3>Thursday - Day 4: Advanced Topics</h3>
-                <div class="schedule-item">
-                    <div class="time">09:00 - 11:00</div>
-                    <div class="schedule-content">
-                        <h4>🎯 Tutorial: [Advanced Topic]</h4>
-                        <p class="speaker">Dr. [Name], [Institution]</p>
-                        <p class="description">Deep dive into specialized analysis techniques</p>
+                    <!-- Day 2 -->
+                    <div class="day-panel" data-day="2">
+                        <div class="day-title">Tuesday - Day 2: Advanced Techniques</div>
+                        <div class="session-list">
+                            <div class="session-item">
+                                <div class="session-time">09:00 - 11:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Tutorial: Machine Learning for Quasars</div>
+                                    <div class="session-speaker">Dr. [Name], [Institution]</div>
+                                    <div class="session-desc">Classification, photometric redshifts, and anomaly detection</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">11:00 - 12:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Lightning Talks</div>
+                                    <div class="session-desc">5-minute talks from participants on their research</div>
+                                </div>
+                            </div>
+                            <div class="session-item break">
+                                <div class="session-time">12:00 - 13:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Lunch Break</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">13:00 - 17:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Hack Project Time</div>
+                                    <div class="session-desc">Work on team projects with mentor support</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">11:00 - 12:00</div>
-                    <div class="schedule-content">
-                        <h4>📢 Mid-week Project Updates</h4>
-                        <p class="description">Each team presents progress (5 min per team)</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">12:00 - 13:00</div>
-                    <div class="schedule-content">
-                        <h4>🍕 Lunch Break</h4>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">13:00 - 17:00</div>
-                    <div class="schedule-content">
-                        <h4>🔨 Hack Project Time</h4>
-                        <p class="description">Final push on projects</p>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card schedule-day">
-                <h3>Friday - Day 5: Presentations & Wrap-up</h3>
-                <div class="schedule-item">
-                    <div class="time">09:00 - 11:00</div>
-                    <div class="schedule-content">
-                        <h4>🔨 Final Project Sprint</h4>
-                        <p class="description">Last chance to polish presentations and code</p>
+                    <!-- Day 3 -->
+                    <div class="day-panel" data-day="3">
+                        <div class="day-title">Wednesday - Day 3: Hack Day</div>
+                        <div class="session-list">
+                            <div class="session-item">
+                                <div class="session-time">09:00 - 12:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Hack Project Time</div>
+                                    <div class="session-desc">Intensive project development session</div>
+                                </div>
+                            </div>
+                            <div class="session-item break">
+                                <div class="session-time">12:00 - 13:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Lunch Break</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">13:00 - 15:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Special Session: [Topic TBD]</div>
+                                    <div class="session-speaker">Guest Speaker</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">15:00 - 17:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Hack Project Time</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">11:00 - 12:00</div>
-                    <div class="schedule-content">
-                        <h4>🍕 Lunch Break</h4>
+
+                    <!-- Day 4 -->
+                    <div class="day-panel" data-day="4">
+                        <div class="day-title">Thursday - Day 4: Advanced Topics</div>
+                        <div class="session-list">
+                            <div class="session-item">
+                                <div class="session-time">09:00 - 11:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Tutorial: [Advanced Topic]</div>
+                                    <div class="session-speaker">Dr. [Name], [Institution]</div>
+                                    <div class="session-desc">Deep dive into specialized analysis techniques</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">11:00 - 12:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Mid-week Project Updates</div>
+                                    <div class="session-desc">Each team presents progress (5 min per team)</div>
+                                </div>
+                            </div>
+                            <div class="session-item break">
+                                <div class="session-time">12:00 - 13:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Lunch Break</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">13:00 - 17:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Hack Project Time</div>
+                                    <div class="session-desc">Final push on projects</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">12:00 - 15:00</div>
-                    <div class="schedule-content">
-                        <h4>🎉 Team Presentations</h4>
-                        <p class="description">Each team presents their hack project results (15 min per team)</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">15:00 - 15:30</div>
-                    <div class="schedule-content">
-                        <h4>🏆 Closing Remarks & Feedback</h4>
-                        <p class="speaker">Organizers</p>
-                        <p class="description">Wrap-up, next steps, and community building</p>
-                    </div>
-                </div>
-                <div class="schedule-item">
-                    <div class="time">15:30 - 17:00</div>
-                    <div class="schedule-content">
-                        <h4>🎊 Social Hour</h4>
-                        <p class="description">Celebrate the week's accomplishments!</p>
+
+                    <!-- Day 5 -->
+                    <div class="day-panel" data-day="5">
+                        <div class="day-title">Friday - Day 5: Presentations & Wrap-up</div>
+                        <div class="session-list">
+                            <div class="session-item">
+                                <div class="session-time">09:00 - 11:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Final Project Sprint</div>
+                                    <div class="session-desc">Last chance to polish presentations and code</div>
+                                </div>
+                            </div>
+                            <div class="session-item break">
+                                <div class="session-time">11:00 - 12:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Lunch Break</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">12:00 - 15:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Team Presentations</div>
+                                    <div class="session-desc">Each team presents their hack project results (15 min per team)</div>
+                                </div>
+                            </div>
+                            <div class="session-item">
+                                <div class="session-time">15:00 - 15:30</div>
+                                <div class="session-details">
+                                    <div class="session-name">Closing Remarks & Feedback</div>
+                                    <div class="session-speaker">Organizers</div>
+                                    <div class="session-desc">Wrap-up, next steps, and community building</div>
+                                </div>
+                            </div>
+                            <div class="session-item social">
+                                <div class="session-time">15:30 - 17:00</div>
+                                <div class="session-details">
+                                    <div class="session-name">Social Hour 🎊</div>
+                                    <div class="session-desc">Celebrate the week's accomplishments!</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
+
 
         <section id="materials">
             <h2>Materials & Resources</h2>
@@ -805,5 +1422,37 @@
             </p>
         </div>
     </footer>
+
+    
+<script>
+// View Toggle Functionality
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Update button states
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Update view
+        const view = this.dataset.view;
+        document.querySelectorAll('.schedule-view').forEach(v => v.classList.remove('active'));
+        document.querySelector(`.${view}-view`).classList.add('active');
+    });
+});
+
+// Day Tab Functionality
+document.querySelectorAll('.day-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        const day = this.dataset.day;
+        
+        // Update tab states
+        document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Update panel
+        document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+        document.querySelector(`.day-panel[data-day="${day}"]`).classList.add('active');
+    });
+});
+</script>
 </body>
 </html>
